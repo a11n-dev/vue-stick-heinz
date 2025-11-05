@@ -1,0 +1,72 @@
+{
+  "controls":{
+    "sort": {
+      "byDate": "By date",
+      "byViews": "By views",
+      "byDownloads": "By downloads"
+    },
+    "filter": {
+      "demo": "Demo",
+      "releases": "Releases"
+    }
+  },
+  "header": {
+    "navigation": {
+      "home": "Home",
+      "blog": "Blog",
+      "releases": "Releases",
+      "about": "About",
+      "contact": "Contact"
+    }
+  },
+  "lang": {
+    "title": "Select a language"
+  },
+  "indexFirtsBlock": {
+    "welcome": "Welcome!",
+    "introText": "Hi there! This is Stick Heinz homepage. <br /> More than 10 years i making first class hip-hop beats.",
+    "btnText": "also make to order"
+  },
+  "releases": {
+    "title": "My releases"
+  },
+  "blog": {
+    "title": "My blog"
+  },
+  "contactForm": {
+    "title": "Also make to order",
+    "text": "When you enter into any new area of science you almost always find yourself.",
+    "inputs": {
+      "name": {
+        "label": "Your Name",
+        "placeholder": "Enter your name"
+      },
+      "email": {
+        "label": "E-mail",
+        "placeholder": "Enter your e-mail address"
+      },
+      "message": {
+        "label": "Mesage",
+        "placeholder": "Your mesage here ..."
+      },
+      "btnText": "SEND"
+    }
+  },
+  "about": {
+    "title": "MY STORY BEGAN EVEN MORE EARLY",
+    "chronology": [
+      {
+        "id": 0,
+        "value": "<div class='date'>2009 old way</div>        <p>          A dependent clause, also known as a “subordinate clause,” adds extra          information to a sentence. It cannot, however, work as a sentence by          itself. Example: Raghav dances only when Bhavya sings. Here, ‘Raghav          dances’ is the independent clause and ‘only when Bhavya sings’ is          the dependent clause. This is because the subordinate clause makes          no sense on its own. It is “subordinate” because it “depends” on the          main clause to make sense. This can further be clarified, by writing          the two ‘sentences’ separately: Raghav dances. (correct and          complete)        </p>        <p><img src='../assets/about.png' /></p>        <p>          A dependent clause, also known as a “subordinate clause,” adds extra          information to a sentence. It cannot, however, work as a sentence by          itself. Example: Raghav dances only when Bhavya sings. Here, ‘Raghav          dances’ is the independent clause and ‘only when Bhavya sings’ is          the dependent clause. This is because the subordinate clause makes          no sense on its own. It is “subordinate” because it “depends” on the          main clause to make sense. This can further be clarified, by writing          the two ‘sentences’ separately: Raghav dances. (correct and          complete) <a href='#'>google</a>        </p>"
+      },
+      {
+        "id": 1,
+        "value": "<div class='date'>2019 NEW way</div>        <p>          A dependent clause, also known as a “subordinate clause,” adds extra          information to a sentence. It cannot, however, work as a sentence by          itself. Example: Raghav dances only when Bhavya sings. Here, ‘Raghav          dances’ is the independent clause and ‘only when Bhavya sings’ is          the dependent clause. This is because the subordinate clause makes          no sense on its own. It is “subordinate” because it “depends” on the          main clause to make sense. This can further be clarified, by writing          the two ‘sentences’ separately: Raghav dances. (correct and          complete)        </p>        <p><img src='../assets/about.png' /></p>        <p>          A dependent clause, also known as a “subordinate clause,” adds extra          information to a sentence. It cannot, however, work as a sentence by          itself. Example: Raghav dances only when Bhavya sings. Here, ‘Raghav          dances’ is the independent clause and ‘only when Bhavya sings’ is          the dependent clause. This is because the subordinate clause makes          no sense on its own. It is “subordinate” because it “depends” on the          main clause to make sense. This can further be clarified, by writing          the two ‘sentences’ separately: Raghav dances. (correct and          complete) <a href='#'>google</a>        </p>"
+      },
+      {
+        "id": 2,
+        "value": "<div class='date'>My professional tools</div>        <p>I using next tools in my work:</p>        <ul>          <li>Native Instruments Traktor Kontrol S2 MK3</li>          <li>Native Instruments Maschine MK3</li>          <li>Akai LPK25</li>          <li>Shure SM58</li>        </ul>"
+      }
+    ]
+  }
+}

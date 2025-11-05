@@ -1,0 +1,58 @@
+{
+  "name": "stick-heinz",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vue-cli-service build --dest dist/client",
+    "build:server": "cross-env SSR=1 vue-cli-service build --dest dist/server",
+    "start": "node server.js",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/vue-fontawesome": "^3.0.0-3",
+    "@vue/server-renderer": "^3.0.7",
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
+    "cross-env": "^7.0.2",
+    "emailjs-com": "^2.6.4",
+    "express": "^4.17.1",
+    "swiper": "^6.5.0",
+    "vue": "^3.0.0",
+    "vue-i18n": "^9.0.0",
+    "vue-router": "^4.0.5",
+    "webpack-manifest-plugin": "^3.1.0",
+    "webpack-node-externals": "^2.5.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^7.0.0-0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
