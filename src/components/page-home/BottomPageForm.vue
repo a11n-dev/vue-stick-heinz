@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      // Заглушка для формы - просто показываем alert
+      // Form stub - just show alert
       if (this.name && this.email && this.message) {
         alert('Спасибо за сообщение! (это демо-режим, сообщение не отправлено)');
         this.name = null;

@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
   // set the current language for i18n (Composition API mode)
   i18n.global.locale.value = language
   
-  // Закрываем все overlay и popup при переходе между страницами
+  // Close all overlays and popups when navigating between pages
   if (typeof window !== 'undefined') {
     const menubg = document.getElementById('menubg')
     const popupLangs = document.querySelector('.popup-langs')

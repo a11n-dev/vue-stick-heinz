@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     getBlogPosts() {
-      // Используем моковые данные вместо API
+      // Use mock data instead of API
       setTimeout(() => {
         this.blog = mockBlog;
       }, 100);

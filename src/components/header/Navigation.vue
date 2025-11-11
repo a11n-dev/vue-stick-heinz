@@ -46,17 +46,17 @@ export default {
       const menu = document.querySelector(".menu");
       
       if (menu.classList.contains("opened")) {
-        // Закрываем
+        // Close
         menu.classList.remove("opened");
         menubg.classList.remove("fade-in");
       } else {
-        // Открываем
+        // Open
         menu.classList.add("opened");
         menubg.classList.add("fade-in");
       }
     },
     closeMenu() {
-      // Всегда закрываем меню при клике на ссылку
+      // Always close menu on link click
       const menubg = document.getElementById("menubg");
       const menu = document.querySelector(".menu");
       menu.classList.remove("opened");

@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     getBlogPost() {
-      // Используем моковые данные
+      // Use mock data
       setTimeout(() => {
         const postId = parseInt(this.$route.params.id);
         this.post = mockBlog.find(p => p.id === postId) || {};

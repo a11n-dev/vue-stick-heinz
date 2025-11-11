@@ -218,7 +218,7 @@ export default {
   display: none;
 }
 .index-releases .list .item .share a:not(.downloads) {
-  display: none; /* Скрываем иконки социальных сетей без background */
+  display: none; /* Hide social media icons without background */
 }
 
 .index-releases .list .item .share .downloads {

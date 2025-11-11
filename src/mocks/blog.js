@@ -1,4 +1,4 @@
-// Моковые данные для блога
+// Mock data for blog
 const blogPosts = [
   {
     id: 1,

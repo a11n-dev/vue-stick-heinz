@@ -9,7 +9,7 @@ const threatSongs = songs => {
     song["isPlaying"] = false;
     song["percent"] = 0;
     
-    // src уже есть в моковых данных или будет пустым для треков без аудио
+    // src already exists in mock data or will be empty for tracks without audio
     if (!song.src) {
       song["src"] = '';
     }
@@ -18,7 +18,7 @@ const threatSongs = songs => {
       song["srcDownload"] = '';
     }
 
-    // Обработка длительности - поддержка как формата "MM:SS" так и секунд
+    // Duration handling - support both "MM:SS" format and seconds
     if (song.length) {
       let msArr = song.length.split(':');
       song["seconds"] = (+msArr[0]) * 60 + (+msArr[1]);

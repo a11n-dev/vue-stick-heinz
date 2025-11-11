@@ -171,7 +171,7 @@ export default {
       this.downloadsSortMethod = !this.downloadsSortMethod;
     },
     getSongReliases() {
-      // Используем моковые данные
+      // Use mock data
       setTimeout(() => {
         const sorted = [...mockReleases].sort((a, b) => {
           return new Date(b.created) - new Date(a.created);
@@ -237,7 +237,7 @@ export default {
       this.setPages();
     },
     page() {
-      // Обновляем данные при смене страницы
+      // Update data on page change
       this.getSongReliases();
     },
   },
@@ -361,7 +361,7 @@ export default {
   padding-top: 5px;
 }
 .releases-page .item .top-content .share a:not(.downloads) {
-  display: none; /* Скрываем иконки социальных сетей, т.к. нет background */
+  display: none; /* Hide social media icons without background */
 }
 .releases-page .item .top-content .share .downloads {
   display: inline-block;

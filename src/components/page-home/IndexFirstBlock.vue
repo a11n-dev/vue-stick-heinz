@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     getLastRelease() {
-      // Используем моковые данные вместо API
+      // Use mock data instead of API
       setTimeout(() => {
         this.lastRelease = threatSongs(mockReleases);
         this.sortByDate();

@@ -244,7 +244,7 @@ export default {
       this.setPages();
     },
     page() {
-      // Обновляем данные при смене страницы
+      // Update data on page change
       this.getBlogPosts();
     },
   },

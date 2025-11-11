@@ -1,4 +1,4 @@
-// Моковые данные для релизов
+// Mock data for releases
 const releases = [
   {
     id: 1,

@@ -21,13 +21,27 @@ function loadLocaleMessages() {
   return messages
 }
 
+// Detect browser language
+function getBrowserLocale() {
+  const browserLang = navigator.language || navigator.userLanguage
+  const lang = browserLang.split('-')[0] // 'en-US' → 'en'
+  
+  // Check if we support this language
+  return ['en', 'ru'].includes(lang) ? lang : 'en'
+}
+
+// Use browser language or fallback to English
+const defaultLocale = typeof window !== 'undefined' 
+  ? getBrowserLocale() 
+  : 'en'
+
 let i18n = createI18n({
   legacy: false,
-  locale: 'ru', // Дефолтный язык русский
+  locale: defaultLocale,
   fallbackLocale: 'en',
   messages: loadLocaleMessages(),
   warnHtmlMessage: false,
-  globalInjection: true // Добавляем глобальную инъекцию для $t
+  globalInjection: true
 })
 
 export default i18n

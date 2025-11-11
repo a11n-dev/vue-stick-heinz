@@ -6,11 +6,11 @@ export const modalMixin = {
       const popup = document.querySelector('.popup-langs')
       
       if (popup.classList.contains('opened')) {
-        // Закрываем
+        // Close
         popup.classList.remove('opened')
         menubg.classList.remove('fade-in')
       } else {
-        // Открываем
+        // Open
         popup.classList.add('opened')
         menubg.classList.add('fade-in')
       }
@@ -20,78 +20,46 @@ export const modalMixin = {
 
 import { threatSongs } from "./helpers/utils";
 import mockReleases from "./mocks/releases";
+import audioPlayer from "./audio-player";
 
 export const audioMixin = {
   data() {
     return {
       songs: [],
-      current: {},
-      isPlaying: false,
-      isMuted: false,
-      clickCounter: 0,
-      player: new Audio(),
+    }
+  },
+  computed: {
+    current() {
+      return audioPlayer.state.current;
+    },
+    isPlaying() {
+      return audioPlayer.state.isPlaying;
+    },
+    clickCounter() {
+      return audioPlayer.state.clickCounter;
+    },
+    player() {
+      return audioPlayer.player;
     }
   },
   methods: {
     getReliases() {
-      // Используем моковые данные вместо API
+      // Use mock data instead of API
       setTimeout(() => {
         this.songs = threatSongs(mockReleases);
       }, 100);
     },
-    listenersWhenPlay() {
-      this.player.addEventListener("timeupdate", () => {
-        var playerTimer = this.player.currentTime;
-
-        this.current.percent = (playerTimer * 100) / this.current.seconds;
-        this.current.isPlaying = true;
-      });
-    },
     play(song) {
-      if (typeof song.src !== "undefined" && this.current !== song) {
-        this.current.isPlaying = false;
-        this.current = song;
-        this.player.src = this.current.src;
-      }
-
-      this.player.play();
-      this.isPlaying = true;
-      this.current.isPlaying = true;
-
-      this.listenersWhenPlay();
+      audioPlayer.play(song);
     },
     pause() {
-      this.player.pause();
-
-      setTimeout(() => {
-        this.isPlaying = false;
-        this.current.isPlaying = false;
-      }, 100)
+      audioPlayer.pause();
     },
     sound() {
-      this.clickCounter++
-
-      switch (this.clickCounter) {
-        case 1:
-          this.player.volume = .5
-          break;
-        case 2:
-          this.player.muted = true
-          break;
-        case 3:
-          this.player.muted = false
-          this.clickCounter = 0
-          break;
-          
-        default:
-          break;
-      }
-      
-      this.isMuted = !this.isMuted
+      audioPlayer.toggleSound();
     },
     rewind(event) {
-      let progressClickPercent =  event.offsetX / event.currentTarget.offsetWidth;
-      this.player.currentTime = this.current.seconds * progressClickPercent
+      audioPlayer.rewind(event);
     },
   }
 }
