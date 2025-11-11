@@ -355,22 +355,15 @@ main {
   background: rgba(1, 1, 1, 0.7);
   z-index: 11;
   display: none;
-  transition: opacity 1s;
   opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 #menubg.fade-in {
   display: block;
-  animation: fadeIn ease 0.5s forwards;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  opacity: 1;
+  pointer-events: auto;
 }
 
 @media (max-width: 1320px) {

@@ -3,74 +3,55 @@
     <div class="wrap">
       <div
         class="top-image"
-        :style="
-          'background: #353535 url(' +
-          apiURL +
-          '/api/blog/download/' +
-          post.index +
-          '/main' +
-          ') no-repeat center;'
-        "
+        :style="'background: #353535 url(' + (post.image || '') + ') no-repeat center;'"
       >
         <div class="badge" v-if="post.badge">NEW</div>
       </div>
       <div class="text">
         <div class="date">
           {{
-            new Date(post.created).toLocaleDateString("default", {
+            post.date ? new Date(post.date).toLocaleDateString($i18n.locale, {
               year: "numeric",
               month: "long",
               day: "numeric",
-            })
+            }) : ''
           }}
         </div>
-        <h2 class="post-title"></h2>
+        <h2 class="post-title">{{ post.title ? (post.title[$i18n.locale] || post.title.en) : '' }}</h2>
 
         <!-- Post content -->
-        <div class="post-content"></div>
+        <div class="post-content" v-html="post.content ? (post.content[$i18n.locale] || post.content.en) : ''"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios"; // Axios pack
 import i18n from "@/i18n";
-import { apiURL } from "../helpers/utils"
+import mockBlog from "../mocks/blog";
 
 export default {
   name: "BlogPost",
   data() {
     return {
       post: {},
-      apiURL
     };
   },
   methods: {
     getBlogPost() {
-      axios
-        .get(this.apiURL + "/api/blog/post/" + this.$route.params.id)
-        .then((response) => {
-          this.post = response.data;
-          this.setContent();
-        });
+      // Используем моковые данные
+      setTimeout(() => {
+        const postId = parseInt(this.$route.params.id);
+        this.post = mockBlog.find(p => p.id === postId) || {};
+      }, 100);
     },
     getLangIndex(array) {
+      if (!array || !Array.isArray(array)) return 0;
       return array
         .map((e) => {
           return e.lang;
         })
-        .indexOf(i18n.global.locale.toUpperCase());
-    },
-    setContent() {
-      if (this.post.post != undefined) {
-        document.querySelector(".post-content").innerHTML = this.post.post[
-          this.getLangIndex(this.post.post)
-        ].value;
-        document.querySelector(".post-title").innerHTML = this.post.title[
-          this.getLangIndex(this.post.title)
-        ].value;
-      }
+        .indexOf(i18n.global.locale.value.toLowerCase());
     },
   },
   created() {
@@ -78,7 +59,7 @@ export default {
   },
   watch: {
     $route() {
-      this.setContent();
+      this.getBlogPost();
     },
   },
 };

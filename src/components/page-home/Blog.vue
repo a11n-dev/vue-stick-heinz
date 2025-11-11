@@ -4,6 +4,8 @@
       <div class="block-name">{{ $t("blog.title") }}</div>
 
       <swiper
+        v-if="blog && blog.length > 0"
+        :modules="modules"
         :slides-per-view="slidesPerView"
         :space-between="20"
         :pagination="{ clickable: false }"
@@ -13,18 +15,12 @@
           <div class="item">
             <div
               class="image"
-              :style="
-                'background: url(' +
-                apiURL +
-                '/api/blog/download/' +
-                post.index +
-                '/main)'
-              "
+              :style="'background: url(' + post.image + ')'"
             ></div>
             <div class="text">
               <div class="date">
                 {{
-                  new Date(post.created).toLocaleDateString("default", {
+                  new Date(post.date).toLocaleDateString($i18n.locale, {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -35,9 +31,9 @@
                 :to="`/${$i18n.locale}/blog/` + post.id"
                 class="name"
                 tabindex="0"
-                >{{ post.title[getLangIndex(post.title)].value }}</router-link
+                >{{ post.title[$i18n.locale] || post.title.en }}</router-link
               >
-              <p>{{ post.intro[getLangIndex(post.intro)].value }}</p>
+              <p>{{ post.excerpt[$i18n.locale] || post.excerpt.en }}</p>
               <div class="views">{{ post.views }}</div>
             </div>
           </div>
@@ -48,19 +44,16 @@
 </template>
 
 <script>
-import axios from "axios"; // Axios pack
 import i18n from "@/i18n";
-import { apiURL } from "../../helpers/utils";
-import SwiperCore, { Pagination } from "swiper";
+import mockBlog from "../../mocks/blog";
 
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination } from "swiper/modules";
 
 // Import Swiper styles
-import "swiper/swiper.min.css";
-import "swiper/components/pagination/pagination.min.css";
-
-SwiperCore.use([Pagination]);
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default {
   components: {
@@ -69,10 +62,10 @@ export default {
   },
   data() {
     return {
+      modules: [Pagination],
       slidesPerView: 4,
       navigation: true,
       blog: [],
-      apiURL,
     };
   },
   created() {
@@ -82,16 +75,18 @@ export default {
   },
   methods: {
     getBlogPosts() {
-      axios.get(this.apiURL + "/api/blog").then((response) => {
-        this.blog = response.data.content;
-      });
+      // Используем моковые данные вместо API
+      setTimeout(() => {
+        this.blog = mockBlog;
+      }, 100);
     },
     getLangIndex(array) {
+      if (!array || !Array.isArray(array)) return 0;
       return array
         .map((e) => {
           return e.lang;
         })
-        .indexOf(i18n.global.locale.toUpperCase());
+        .indexOf(i18n.global.locale.value.toLowerCase());
     },
     windowResize() {
       if (window.innerWidth <= 1319.98 && window.innerWidth >= 768) {

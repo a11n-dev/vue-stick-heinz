@@ -19,10 +19,20 @@ export default {
   mixins: [modalMixin],
   methods: {
     setLocale: function(locale) {
-      i18n.global.locale = locale
-      router.push({
-        params: { lang: locale }
-      })
+      // Правильный способ установки locale для Composition API (legacy: false)
+      i18n.global.locale.value = locale
+      
+      // Получаем текущий путь без языка
+      const currentPath = this.$route.path
+      const pathWithoutLang = currentPath.replace(/^\/(en|ru)/, '')
+      
+      // Формируем новый путь с новым языком
+      const newPath = `/${locale}${pathWithoutLang || ''}`
+      
+      // Переходим на новый путь
+      router.push(newPath)
+      
+      // Закрываем popup
       this.langsPopup()
     }
   }

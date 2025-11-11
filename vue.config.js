@@ -3,9 +3,11 @@ const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   devServer: {
-    overlay: {
-      warnings: false,
-      errors: false
+    client: {
+      overlay: {
+        warnings: false,
+        errors: false
+      }
     }
   },
   chainWebpack: webpackConfig => {
@@ -18,7 +20,7 @@ module.exports = {
 
     if (!process.env.SSR) {
       // Point entry to your app's client entry file
-      webpackConfig.devServer.disableHostCheck(true);
+      webpackConfig.devServer.set('allowedHosts', 'all');
 
       webpackConfig
         .entry('app')

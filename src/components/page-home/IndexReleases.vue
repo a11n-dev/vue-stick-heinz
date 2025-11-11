@@ -3,6 +3,8 @@
     <div class="block-name">{{ $t("releases.title") }}</div>
 
     <swiper
+      v-if="songs && songs.length > 0"
+      :modules="modules"
       :slides-per-view="slidesPerView"
       :space-between="0"
       :centeredSlides="true"
@@ -16,32 +18,36 @@
         <div class="item">
           <div class="image">
             <img
-              :src="apiURL + '/api/release/download/' + song.id + '/cover'"
+              :src="song.cover || require('@/assets/release.png')"
             />
           </div>
           <div class="flex">
-            <div class="name">{{ song.track }}</div>
+            <div class="name">{{ song.track || song.title }}</div>
             <div class="share">
               <a
+                v-if="song.releaseLinks && song.releaseLinks.youtube"
                 tabindex="-1"
                 target="_blank"
                 :href="song.releaseLinks.youtube"
               ></a>
               <a
+                v-if="song.releaseLinks && song.releaseLinks.soundcloud"
                 tabindex="-1"
                 target="_blank"
                 :href="song.releaseLinks.soundcloud"
               ></a>
               <a
+                v-if="song.releaseLinks && song.releaseLinks.spotify"
                 tabindex="-1"
                 target="_blank"
                 :href="song.releaseLinks.spotify"
               ></a>
               <a
+                v-if="song.srcDownload"
                 class="downloads"
                 :href="song.srcDownload"
-                :download="song.track"
-                >{{ song.downloads }}
+                :download="song.track || song.title"
+                >{{ song.downloads || 0 }}
               </a>
             </div>
           </div>
@@ -79,21 +85,15 @@
 
 <script>
 import { audioMixin } from "../../mixins";
-import { apiURL } from "../../helpers/utils";
-
-// Import Swiper core and required modules
-import SwiperCore, { Navigation, Pagination } from "swiper";
 
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination } from "swiper/modules";
 
 // Import Swiper styles
-import "swiper/swiper.min.css";
-import "swiper/components/navigation/navigation.min.css";
-import "swiper/components/pagination/pagination.min.css";
-
-// Install Swiper modules
-SwiperCore.use([Navigation, Pagination]);
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 export default {
   components: {
@@ -102,9 +102,9 @@ export default {
   },
   data() {
     return {
+      modules: [Navigation, Pagination],
       slidesPerView: 4,
       navigation: true,
-      apiURL,
     };
   },
   mixins: [audioMixin],
@@ -218,29 +218,7 @@ export default {
   display: none;
 }
 .index-releases .list .item .share a:not(.downloads) {
-  display: inline-block;
-  vertical-align: middle;
-  width: 26px;
-  height: 26px;
-  margin-right: 5px;
-}
-.index-releases .list .item .share a:nth-child(1) {
-  background: url("../../assets/share1.svg");
-}
-.index-releases .list .item .share a:nth-child(1):hover {
-  background: url("../../assets/share1h.svg");
-}
-.index-releases .list .item .share a:nth-child(2) {
-  background: url("../../assets/share2.svg");
-}
-.index-releases .list .item .share a:nth-child(2):hover {
-  background: url("../../assets/share2h.svg");
-}
-.index-releases .list .item .share a:nth-child(3) {
-  background: url("../../assets/share3.svg");
-}
-.index-releases .list .item .share a:nth-child(3):hover {
-  background: url("../../assets/share3h.svg");
+  display: none; /* Скрываем иконки социальных сетей без background */
 }
 
 .index-releases .list .item .share .downloads {
@@ -350,13 +328,13 @@ export default {
 }
 .index-releases .list .swiper-button-prev {
   left: 50%;
-  margin-left: -300px;
+  margin-left: -450px;
   background: url("../../assets/prev.svg");
   cursor: pointer;
 }
 .index-releases .list .swiper-button-next {
   right: 50%;
-  margin-right: -300px;
+  margin-right: -450px;
   background: url("../../assets/next.svg");
   cursor: pointer;
 }
@@ -410,7 +388,10 @@ export default {
   }
 
   .index-releases .swiper-pagination {
-    display: unset;
+    display: block;
+    text-align: center;
+    left: 0 !important;
+    width: 100% !important;
   }
 }
 </style>

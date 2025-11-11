@@ -2,27 +2,27 @@
   <ul class="menu">
     <a class="close" @click="mobileMeneToggle()"></a>
     <li>
-      <router-link :to="`/${$i18n.locale}`" @click="mobileMeneToggle()">{{
+      <router-link :to="`/${$i18n.locale}`" @click="closeMenu()">{{
         $t("header.navigation.home")
       }}</router-link>
     </li>
     <li>
-      <router-link :to="`/${$i18n.locale}/blog`" @click="mobileMeneToggle()">{{
+      <router-link :to="`/${$i18n.locale}/blog`" @click="closeMenu()">{{
         $t("header.navigation.blog")
       }}</router-link>
     </li>
     <li>
-      <router-link :to="`/${$i18n.locale}/releases`" @click="mobileMeneToggle()">{{
+      <router-link :to="`/${$i18n.locale}/releases`" @click="closeMenu()">{{
         $t("header.navigation.releases")
       }}</router-link>
     </li>
     <li>
-      <router-link :to="`/${$i18n.locale}/contacts`" @click="mobileMeneToggle()">{{
+      <router-link :to="`/${$i18n.locale}/contacts`" @click="closeMenu()">{{
         $t("header.navigation.contact")
       }}</router-link>
     </li>
     <li>
-      <router-link :to="`/${$i18n.locale}/about`" @click="mobileMeneToggle()">{{
+      <router-link :to="`/${$i18n.locale}/about`" @click="closeMenu()">{{
         $t("header.navigation.about")
       }}</router-link>
     </li>
@@ -42,8 +42,25 @@ export default {
   name: "Navigation",
   methods: {
     mobileMeneToggle() {
-      document.getElementById("menubg").classList.toggle("fade-in");
-      document.querySelector(".menu").classList.toggle("opened");
+      const menubg = document.getElementById("menubg");
+      const menu = document.querySelector(".menu");
+      
+      if (menu.classList.contains("opened")) {
+        // Закрываем
+        menu.classList.remove("opened");
+        menubg.classList.remove("fade-in");
+      } else {
+        // Открываем
+        menu.classList.add("opened");
+        menubg.classList.add("fade-in");
+      }
+    },
+    closeMenu() {
+      // Всегда закрываем меню при клике на ссылку
+      const menubg = document.getElementById("menubg");
+      const menu = document.querySelector(".menu");
+      menu.classList.remove("opened");
+      menubg.classList.remove("fade-in");
     },
   },
 };

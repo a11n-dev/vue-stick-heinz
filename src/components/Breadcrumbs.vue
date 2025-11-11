@@ -26,7 +26,7 @@ export default {
         .map((e) => {
           return e.lang;
         })
-        .indexOf(i18n.global.locale.toLowerCase());
+        .indexOf(i18n.global.locale.value.toLowerCase());
     },
   },
   watch: {

@@ -25,19 +25,12 @@
           <div class="badge" v-if="post.badge">NEW</div>
           <div
             class="image"
-            :style="
-              'background: #353535 url(' +
-              apiURL +
-              '/api/blog/download/' +
-              post.index +
-              '/main' +
-              ') no-repeat center;'
-            "
+            :style="'background: #353535 url(' + post.image + ') no-repeat center;'"
           ></div>
           <div class="text">
             <div class="date">
               {{
-                new Date(post.created).toLocaleDateString("default", {
+                new Date(post.date).toLocaleDateString($i18n.locale, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
@@ -45,10 +38,10 @@
               }}
             </div>
             <router-link :to="`/${$i18n.locale}/blog/` + post.id" class="name">
-              {{ post.title[getLangIndex(post.title)].value }}
+              {{ post.title[$i18n.locale] || post.title.en }}
             </router-link>
             <p>
-              {{ post.intro[getLangIndex(post.intro)].value }}
+              {{ post.excerpt[$i18n.locale] || post.excerpt.en }}
             </p>
             <div class="views">{{ post.views }}</div>
           </div>
@@ -62,19 +55,12 @@
           <template v-if="index % 2 === 0">
             <div
               class="image"
-              :style="
-                'background: #353535 url(' +
-                apiURL +
-                '/api/blog/download/' +
-                post.index +
-                '/main' +
-                ') no-repeat center;'
-              "
+              :style="'background: #353535 url(' + post.image + ') no-repeat center;'"
             ></div>
             <div class="text">
               <div class="date">
                 {{
-                  new Date(post.created).toLocaleDateString("default", {
+                  new Date(post.date).toLocaleDateString($i18n.locale, {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -85,9 +71,9 @@
                 :to="`/${$i18n.locale}/blog/` + post.id"
                 class="name"
               >
-                {{ post.title[getLangIndex(post.title)].value }}
+                {{ post.title[$i18n.locale] || post.title.en }}
               </router-link>
-              <p>{{ post.intro[getLangIndex(post.intro)].value }}</p>
+              <p>{{ post.excerpt[$i18n.locale] || post.excerpt.en }}</p>
               <div class="views">{{ post.views }}</div>
             </div>
           </template>
@@ -96,7 +82,7 @@
             <div class="text">
               <div class="date">
                 {{
-                  new Date(post.created).toLocaleDateString("default", {
+                  new Date(post.date).toLocaleDateString($i18n.locale, {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -107,21 +93,14 @@
                 :to="`/${$i18n.locale}/blog/` + post.id"
                 class="name"
               >
-                {{ post.title[getLangIndex(post.title)].value }}
+                {{ post.title[$i18n.locale] || post.title.en }}
               </router-link>
-              <p>{{ post.intro[getLangIndex(post.intro)].value }}</p>
+              <p>{{ post.excerpt[$i18n.locale] || post.excerpt.en }}</p>
               <div class="views">{{ post.views }}</div>
             </div>
             <div
               class="image"
-              :style="
-                'background: #353535 url(' +
-                apiURL +
-                '/api/blog/download/' +
-                post.index +
-                '/main' +
-                ') no-repeat center;'
-              "
+              :style="'background: #353535 url(' + post.image + ') no-repeat center;'"
             ></div>
           </template>
         </div>
@@ -130,19 +109,12 @@
           <div class="badge" v-if="post.badge">NEW</div>
           <div
             class="image"
-            :style="
-              'background: #353535 url(' +
-              apiURL +
-              '/api/blog/download/' +
-              post.index +
-              '/main' +
-              ') no-repeat center;'
-            "
+            :style="'background: #353535 url(' + post.image + ') no-repeat center;'"
           ></div>
           <div class="text">
             <div class="date">
               {{
-                new Date(post.created).toLocaleDateString("default", {
+                new Date(post.date).toLocaleDateString($i18n.locale, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
@@ -150,10 +122,10 @@
               }}
             </div>
             <router-link :to="`/${$i18n.locale}/blog/` + post.id" class="name">
-              {{ post.title[getLangIndex(post.title)].value }}
+              {{ post.title[$i18n.locale] || post.title.en }}
             </router-link>
             <p>
-              {{ post.intro[getLangIndex(post.intro)].value }}
+              {{ post.excerpt[$i18n.locale] || post.excerpt.en }}
             </p>
             <div class="views">{{ post.views }}</div>
           </div>
@@ -195,9 +167,8 @@
 </template>
 
 <script>
-import axios from "axios"; // Axios pack
 import i18n from "@/i18n";
-import { apiURL } from "../helpers/utils";
+import mockBlog from "../mocks/blog";
 
 export default {
   name: "Blog",
@@ -206,7 +177,6 @@ export default {
       blogPosts: [],
       dateSortMethod: true,
       viewsSortMethod: false,
-      apiURL,
 
       page: 0,
       perPage: 8,
@@ -216,88 +186,46 @@ export default {
   },
   methods: {
     sortByDate: function () {
-      if (!this.dateSortMethod) {
-        axios
-          .get(
-            this.apiURL +
-              "/api/blog?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=created&sortOrder=ASC"
-          )
-          .then((response) => {
-            this.blogPosts = response.data.content;
-          });
-      } else {
-        axios
-          .get(
-            this.apiURL +
-              "/api/blog?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=created&sortOrder=DESC"
-          )
-          .then((response) => {
-            this.blogPosts = response.data.content;
-          });
-      }
-
+      const sorted = [...mockBlog].sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return this.dateSortMethod ? dateB - dateA : dateA - dateB;
+      });
+      
+      this.blogPosts = this.paginateData(sorted);
       this.dateSortMethod = !this.dateSortMethod;
     },
     sortByViews: function () {
-      if (!this.viewsSortMethod) {
-        axios
-          .get(
-            this.apiURL +
-              "/api/blog?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=views&sortOrder=ASC"
-          )
-          .then((response) => {
-            this.blogPosts = response.data.content;
-          });
-      } else {
-        axios
-          .get(
-            this.apiURL +
-              "/api/blog?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=views&sortOrder=DESC"
-          )
-          .then((response) => {
-            this.blogPosts = response.data.content;
-          });
-      }
-
+      const sorted = [...mockBlog].sort((a, b) => {
+        return this.viewsSortMethod 
+          ? a.views - b.views 
+          : b.views - a.views;
+      });
+      
+      this.blogPosts = this.paginateData(sorted);
       this.viewsSortMethod = !this.viewsSortMethod;
     },
     getBlogPosts() {
-      axios
-        .get(
-          this.apiURL +
-            "/api/blog?page=" +
-            this.page +
-            "&size=" +
-            this.perPage +
-            "&sort=created&sortOrder=ASC"
-        )
-        .then((response) => {
-          this.blogPosts = response.data.content;
-          this.numberOfPages = response.data.totalPages;
+      setTimeout(() => {
+        const sorted = [...mockBlog].sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
         });
+        this.blogPosts = this.paginateData(sorted);
+        this.numberOfPages = Math.ceil(mockBlog.length / this.perPage);
+      }, 100);
+    },
+    paginateData(data) {
+      const start = this.page * this.perPage;
+      const end = start + this.perPage;
+      return data.slice(start, end);
     },
     getLangIndex(array) {
+      if (!array || !Array.isArray(array)) return 0;
       return array
         .map((e) => {
           return e.lang;
         })
-        .indexOf(i18n.global.locale.toUpperCase());
+        .indexOf(i18n.global.locale.value.toLowerCase());
     },
 
     setPages() {
@@ -316,18 +244,8 @@ export default {
       this.setPages();
     },
     page() {
-      axios
-        .get(
-          this.apiURL +
-            "/api/blog?page=" +
-            this.page +
-            "&size=" +
-            this.perPage +
-            "&sort=created"
-        )
-        .then((response) => {
-          this.blogPosts = response.data.content;
-        });
+      // Обновляем данные при смене страницы
+      this.getBlogPosts();
     },
   },
 };

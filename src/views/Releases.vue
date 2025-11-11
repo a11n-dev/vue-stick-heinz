@@ -32,29 +32,24 @@
       <div class="flex">
         <div class="item" v-for="song in releasesPosts" :key="song.id">
           <div class="badge" v-if="song.new">latest</div>
-          <div class="badge red" v-if="song.demo">DEMO</div>
+          <div class="badge red" v-if="song.type === 'demo'">DEMO</div>
           <div class="top-content">
             <div
               class="image"
-              :style="
-                'background: url(' +
-                apiURL +
-                '/api/release/download/' +
-                song.id +
-                '/cover)'
-              "
+              :style="'background: url(' + (song.cover || require('@/assets/release.png')) + ')'"
             ></div>
             <div class="flex">
-              <div class="name">{{ song.track }}</div>
+              <div class="name">{{ song.track || song.title }}</div>
               <div class="share">
-                <a tabindex="-1" :href="song.releaseLinks.youtube"></a>
-                <a tabindex="-1" :href="song.releaseLinks.soundcloud"></a>
-                <a tabindex="-1" :href="song.releaseLinks.spotify"></a>
+                <a v-if="song.releaseLinks?.youtube" tabindex="-1" :href="song.releaseLinks.youtube" target="_blank"></a>
+                <a v-if="song.releaseLinks?.soundcloud" tabindex="-1" :href="song.releaseLinks.soundcloud" target="_blank"></a>
+                <a v-if="song.releaseLinks?.spotify" tabindex="-1" :href="song.releaseLinks.spotify" target="_blank"></a>
                 <a
+                  v-if="song.srcDownload"
                   class="downloads"
                   :href="song.srcDownload"
-                  :download="song.track"
-                  >{{ song.downloads }}</a
+                  :download="song.track || song.title"
+                  >{{ song.downloads || 0 }}</a
                 >
               </div>
             </div>
@@ -76,7 +71,7 @@
                   ><font-awesome-icon :icon="['fa', 'volume-mute']"
                 /></a>
               </div>
-              <div class="time">{{ song.length }}</div>
+              <div class="time">{{ song.length || (Math.floor(song.seconds / 60) + ':' + String(song.seconds % 60).padStart(2, '0')) }}</div>
             </div>
             <div class="line" @click="rewind">
               <div
@@ -87,20 +82,20 @@
           </div>
           <div class="date">
             {{
-              new Date(song.created).toLocaleDateString("default", {
+              new Date(song.created).toLocaleDateString($i18n.locale, {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
               })
             }}
           </div>
-          <p>
-            {{ song.desc[getLangIndex(song.desc)].value }}
+          <p v-if="song.desc && Array.isArray(song.desc)">
+            {{ song.desc[getLangIndex(song.desc)]?.value || '' }}
           </p>
 
-          <div class="tags">
+          <div class="tags" v-if="song.tags && song.tags.length > 0">
             <a href="" v-for="tag in song.tags" :key="tag">
-              <span>{{ tag.value[getLangIndex(tag.value)].value }}</span>
+              <span>{{ tag.value ? tag.value[getLangIndex(tag.value)]?.value : tag }}</span>
             </a>
           </div>
         </div>
@@ -133,20 +128,19 @@
 </template>
 
 <script>
-import axios from "axios"; // Axios pack
 import i18n from "@/i18n";
 import { audioMixin } from "../mixins";
-import { apiURL, threatSongs } from "../helpers/utils";
+import { threatSongs } from "../helpers/utils";
+import mockReleases from "../mocks/releases";
 
 export default {
   name: "Releases",
   data() {
     return {
-      releasesPosts: null,
+      releasesPosts: [],
       arr: null,
       dateSortMethod: true,
       downloadsSortMethod: false,
-      apiURL,
 
       page: 0,
       perPage: 4,
@@ -157,100 +151,62 @@ export default {
   mixins: [audioMixin],
   methods: {
     sortByDate: function () {
-      if (!this.dateSortMethod) {
-        axios
-          .get(
-            this.apiURL +
-              "/api/release?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=created&sortOrder=ASC"
-          )
-          .then((response) => {
-            this.releasesPosts = response.data.content;
-          });
-      } else {
-        axios
-          .get(
-            this.apiURL +
-              "/api/release?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=created&sortOrder=DESC"
-          )
-          .then((response) => {
-            this.releasesPosts = response.data.content;
-          });
-      }
-
+      const sorted = [...mockReleases].sort((a, b) => {
+        const dateA = new Date(a.created);
+        const dateB = new Date(b.created);
+        return this.dateSortMethod ? dateB - dateA : dateA - dateB;
+      });
+      
+      this.releasesPosts = this.paginateData(sorted);
       this.dateSortMethod = !this.dateSortMethod;
     },
     sortByDownloads: function () {
-      if (!this.downloadsSortMethod) {
-        axios
-          .get(
-            this.apiURL +
-              "/api/release?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=downloads&sortOrder=ASC"
-          )
-          .then((response) => {
-            this.releasesPosts = response.data.content;
-          });
-      } else {
-        axios
-          .get(
-            this.apiURL +
-              "/api/release?page=" +
-              this.page +
-              "&size=" +
-              this.perPage +
-              "&sort=downloads&sortOrder=DESC"
-          )
-          .then((response) => {
-            this.releasesPosts = response.data.content;
-          });
-      }
-
+      const sorted = [...mockReleases].sort((a, b) => {
+        return this.downloadsSortMethod 
+          ? a.downloads - b.downloads 
+          : b.downloads - a.downloads;
+      });
+      
+      this.releasesPosts = this.paginateData(sorted);
       this.downloadsSortMethod = !this.downloadsSortMethod;
     },
     getSongReliases() {
-      axios
-        .get(
-          this.apiURL +
-            "/api/release?page=" +
-            this.page +
-            "&size=" +
-            this.perPage +
-            "&sort=created&sortOrder=ASC"
-        )
-        .then((response) => {
-          this.releasesPosts = response.data.content;
-          this.releasesPosts = threatSongs(this.releasesPosts);
-          this.numberOfPages = response.data.totalPages;
+      // Используем моковые данные
+      setTimeout(() => {
+        const sorted = [...mockReleases].sort((a, b) => {
+          return new Date(b.created) - new Date(a.created);
         });
+        this.releasesPosts = threatSongs(this.paginateData(sorted));
+        this.numberOfPages = Math.ceil(mockReleases.length / this.perPage);
+      }, 100);
+    },
+    paginateData(data) {
+      const start = this.page * this.perPage;
+      const end = start + this.perPage;
+      return data.slice(start, end);
     },
     getLangIndex(array) {
+      if (!array || !Array.isArray(array)) return 0;
       return array
         .map((e) => {
           return e.lang;
         })
-        .indexOf(i18n.global.locale.toUpperCase());
+        .indexOf(i18n.global.locale.value.toLowerCase());
     },
     releasesFilter(tag) {
       if (this.arr == null) {
-        this.arr = this.releasesPosts;
+        this.arr = mockReleases;
       }
 
+      let filtered;
       if (tag == "demo") {
-        this.releasesPosts = this.arr.filter((song) => song.demo == true);
+        filtered = this.arr.filter((song) => song.type === "demo");
       } else {
-        this.releasesPosts = this.arr;
+        filtered = this.arr;
       }
+      
+      this.releasesPosts = threatSongs(this.paginateData(filtered));
+      this.numberOfPages = Math.ceil(filtered.length / this.perPage);
     },
 
     setPages() {
@@ -281,18 +237,8 @@ export default {
       this.setPages();
     },
     page() {
-      axios
-        .get(
-          this.apiURL +
-            "/api/release?page=" +
-            this.page +
-            "&size=" +
-            this.perPage +
-            "&sort=created"
-        )
-        .then((response) => {
-          this.releasesPosts = response.data.content;
-        });
+      // Обновляем данные при смене страницы
+      this.getSongReliases();
     },
   },
 };
@@ -415,29 +361,7 @@ export default {
   padding-top: 5px;
 }
 .releases-page .item .top-content .share a:not(.downloads) {
-  display: inline-block;
-  vertical-align: middle;
-  width: 26px;
-  height: 26px;
-  margin-right: 5px;
-}
-.releases-page .item .top-content .share a:nth-child(1) {
-  background: url("../assets/share1.svg");
-}
-.releases-page .item .top-content .share a:nth-child(1):hover {
-  background: url("../assets/share1h.svg");
-}
-.releases-page .item .top-content .share a:nth-child(2) {
-  background: url("../assets/share2.svg");
-}
-.releases-page .item .top-content .share a:nth-child(2):hover {
-  background: url("../assets/share2h.svg");
-}
-.releases-page .item .top-content .share a:nth-child(3) {
-  background: url("../assets/share3.svg");
-}
-.releases-page .item .top-content .share a:nth-child(3):hover {
-  background: url("../assets/share3h.svg");
+  display: none; /* Скрываем иконки социальных сетей, т.к. нет background */
 }
 .releases-page .item .top-content .share .downloads {
   display: inline-block;

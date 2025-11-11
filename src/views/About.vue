@@ -5,7 +5,7 @@
 
       <div
         class="item"
-        v-for="item in i18n.global.messages[i18n.global.locale].about.chronology"
+        v-for="item in chronology"
         :key="item.id"
       >
         <div v-html="item.value"></div>
@@ -15,13 +15,22 @@
 </template>
 
 <script>
-import i18n from "../i18n";
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export default {
   name: "About",
-  data() {
+  setup() {
+    const { locale, messages } = useI18n()
+    
+    const chronology = computed(() => {
+      const currentLocale = locale.value
+      return messages.value[currentLocale]?.about?.chronology || []
+    })
+    
     return {
-      i18n,
-    };
+      chronology
+    }
   }
 };
 </script>

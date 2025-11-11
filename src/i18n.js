@@ -22,9 +22,12 @@ function loadLocaleMessages() {
 }
 
 let i18n = createI18n({
-  locale: 'en',
+  legacy: false,
+  locale: 'ru', // Дефолтный язык русский
   fallbackLocale: 'en',
-  messages: loadLocaleMessages()
+  messages: loadLocaleMessages(),
+  warnHtmlMessage: false,
+  globalInjection: true // Добавляем глобальную инъекцию для $t
 })
 
 export default i18n

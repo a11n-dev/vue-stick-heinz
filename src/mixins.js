@@ -2,14 +2,24 @@
 export const modalMixin = {
   methods: {
     langsPopup: function () {
-      document.getElementById('menubg').classList.toggle('fade-in')
-      document.querySelector('.popup-langs').classList.toggle('opened')
+      const menubg = document.getElementById('menubg')
+      const popup = document.querySelector('.popup-langs')
+      
+      if (popup.classList.contains('opened')) {
+        // Закрываем
+        popup.classList.remove('opened')
+        menubg.classList.remove('fade-in')
+      } else {
+        // Открываем
+        popup.classList.add('opened')
+        menubg.classList.add('fade-in')
+      }
     }
   }
 }
 
-import axios from "axios"; // Axios pack
-import { apiURL, threatSongs } from "./helpers/utils";
+import { threatSongs } from "./helpers/utils";
+import mockReleases from "./mocks/releases";
 
 export const audioMixin = {
   data() {
@@ -24,10 +34,10 @@ export const audioMixin = {
   },
   methods: {
     getReliases() {
-      axios.get(apiURL + '/api/release').then((response) => {
-        this.songs = response.data.content;
-        this.songs = threatSongs(this.songs);
-      });
+      // Используем моковые данные вместо API
+      setTimeout(() => {
+        this.songs = threatSongs(mockReleases);
+      }, 100);
     },
     listenersWhenPlay() {
       this.player.addEventListener("timeupdate", () => {

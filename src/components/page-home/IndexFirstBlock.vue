@@ -46,9 +46,9 @@
 </template>
 
 <script>
-import axios from "axios"; // Axios pack
 import { audioMixin } from "../../mixins";
-import { apiURL, threatSongs } from "../../helpers/utils";
+import { threatSongs } from "../../helpers/utils";
+import mockReleases from "../../mocks/releases";
 
 export default {
   name: "IndexFirstBlock",
@@ -62,15 +62,17 @@ export default {
   },
   methods: {
     getLastRelease() {
-      axios.get(apiURL + "/api/release").then((response) => {
-        this.lastRelease = response.data.content;
-        this.lastRelease = threatSongs(this.lastRelease);
+      // Используем моковые данные вместо API
+      setTimeout(() => {
+        this.lastRelease = threatSongs(mockReleases);
         this.sortByDate();
 
-        document.querySelector(
-          ".last-release"
-        ).innerHTML = this.lastRelease[0].track;
-      });
+        if (this.lastRelease && this.lastRelease.length > 0) {
+          document.querySelector(
+            ".last-release"
+          ).innerHTML = this.lastRelease[0].track || this.lastRelease[0].title;
+        }
+      }, 100);
     },
     sortByDate: function () {
       this.lastRelease = this.lastRelease

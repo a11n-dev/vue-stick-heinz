@@ -18,8 +18,26 @@ router.beforeEach((to, from, next) => {
     language = 'ru'
   }
 
-  // set the current language for i18n.
-  i18n.global.locale = language
+  // set the current language for i18n (Composition API mode)
+  i18n.global.locale.value = language
+  
+  // Закрываем все overlay и popup при переходе между страницами
+  if (typeof window !== 'undefined') {
+    const menubg = document.getElementById('menubg')
+    const popupLangs = document.querySelector('.popup-langs')
+    const menu = document.querySelector('.menu')
+    
+    if (menubg) {
+      menubg.classList.remove('fade-in')
+    }
+    if (popupLangs) {
+      popupLangs.classList.remove('opened')
+    }
+    if (menu) {
+      menu.classList.remove('opened')
+    }
+  }
+  
   next()
 })
 

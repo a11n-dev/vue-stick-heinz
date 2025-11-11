@@ -9,7 +9,7 @@ const history = isServer ? createMemoryHistory() : createWebHistory();
 const routes = [
   {
     path: '/',
-    redirect: `/${i18n.global.locale}`
+    redirect: `/${i18n.global.locale.value}`
   },
   {
     path: '/:lang',

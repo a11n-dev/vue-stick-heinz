@@ -49,9 +49,6 @@
 </template>
 
 <script>
-import axios from "axios"; // Axios pack
-import { apiURL } from "../../helpers/utils"
-
 export default {
   name: "BottomPageForm",
   data() {
@@ -64,43 +61,16 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.reCaptcha.then(() => {
-        setTimeout(() => {
-          // eslint-disable-next-line
-          grecaptcha
-            .execute("6LdqfLsaAAAAAHdWF5SPyOR4nz4q_sL1SkPuaDX8", {
-              action: "homepage",
-            })
-            .then((token) => {
-              axios.post(apiURL + '/api/contact/send', {
-                name: this.name,
-                email: this.email,
-                message: this.message,
-                reCaptchaToken: token,
-              });
-
-              this.name = '';
-              this.email = '';
-              this.message = '';
-            });
-        });
-      }, 3000);
+      // Заглушка для формы - просто показываем alert
+      if (this.name && this.email && this.message) {
+        alert('Спасибо за сообщение! (это демо-режим, сообщение не отправлено)');
+        this.name = null;
+        this.email = null;
+        this.message = null;
+      } else {
+        alert('Пожалуйста, заполните все поля');
+      }
     },
-  },
-  mounted() {
-    let reCaptcha = new Promise((resolve, reject) => {
-      const $script = document.createElement("script");
-      $script.src =
-        "https://www.google.com/recaptcha/api.js?render=6LdqfLsaAAAAAHdWF5SPyOR4nz4q_sL1SkPuaDX8";
-      resolve(document.head.appendChild($script));
-
-      setTimeout(
-        () => reject(new Error("Google reCaptcha не инициализирована")),
-        3000
-      );
-    });
-
-    this.reCaptcha = reCaptcha;
   },
 };
 </script>
